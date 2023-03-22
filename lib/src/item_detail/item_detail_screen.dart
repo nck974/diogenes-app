@@ -71,7 +71,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text("Item '$itemName' was deleted"),
               ));
-              Navigator.of(context).pop(true);
+              Navigator.of(context).pop();
             }).catchError((error, stackTrace) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(error.message),
