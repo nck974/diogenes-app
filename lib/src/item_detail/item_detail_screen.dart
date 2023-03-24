@@ -1,3 +1,4 @@
+import 'package:diogenes/src/add_item/add_item_screen.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
 import 'package:flutter/material.dart';
@@ -49,13 +50,19 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
 
   /// Display button to edit the item
   Widget _displayEditButton() {
-    return const Padding(
-      padding: EdgeInsets.only(right: 16.0),
-      child: Icon(Icons.edit),
+    return Padding(
+      padding: const EdgeInsets.only(right: 16.0),
+      child: IconButton(
+        icon: const Icon(Icons.edit),
+        onPressed: () => Navigator.of(context).pushReplacementNamed(
+            AddItemScreen.routeName,
+            arguments: widget.item),
+      ),
     );
   }
 
   /// Display button to delete the item
+  /// TODO: Get isLoading from provider
   Widget _displayDeleteButton() {
     return Consumer<InventoryProvider>(builder: (context, itemProvider, _) {
       return Padding(

@@ -1,3 +1,4 @@
+import 'package:diogenes/src/add_item/add_item_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -79,49 +80,54 @@ class _InventoryScreenState extends State<InventoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Inventory'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                // Navigate to the settings page. If the user leaves and returns
-                // to the app after it has been killed while running in the
-                // background, the navigation stack is restored.
-                Navigator.restorablePushNamed(context, SettingsView.routeName);
-              },
-            ),
-          ],
-        ),
-        body: Consumer<InventoryProvider>(builder: (context, provider, _) {
-          final items = provider.items;
-          return provider.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : provider.errorMessage != null
-                  ? Center(child: Text(provider.errorMessage!))
-                  : items.isEmpty
-                      ? const Center(
-                          child: Text('You do not have any item yet.'))
-                      : SmartRefresher(
-                          enablePullUp: false,
-                          onRefresh: _onRefresh,
-                          controller: _refreshController,
-                          child: ListView.builder(
-                            controller: _scrollController,
-                            // Providing a restorationId allows the ListView to restore the
-                            // scroll position when a user leaves and returns to the app after it
-                            // has been killed while running in the background.
-                            restorationId: 'InventoryScreen',
-                            itemCount: items.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              final item = items[index];
-                              return ItemListTile(
-                                item: item,
-                                onTap: () => _onTapItem(item),
-                              );
-                            },
-                          ),
-                        );
-        }));
+      appBar: AppBar(
+        title: const Text('Inventory'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              // Navigate to the settings page. If the user leaves and returns
+              // to the app after it has been killed while running in the
+              // background, the navigation stack is restored.
+              Navigator.restorablePushNamed(context, SettingsView.routeName);
+            },
+          ),
+        ],
+      ),
+      body: Consumer<InventoryProvider>(builder: (context, provider, _) {
+        final items = provider.items;
+        return provider.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : provider.errorMessage != null
+                ? Center(child: Text(provider.errorMessage!))
+                : items.isEmpty
+                    ? const Center(child: Text('You do not have any item yet.'))
+                    : SmartRefresher(
+                        enablePullUp: false,
+                        onRefresh: _onRefresh,
+                        controller: _refreshController,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          // Providing a restorationId allows the ListView to restore the
+                          // scroll position when a user leaves and returns to the app after it
+                          // has been killed while running in the background.
+                          restorationId: 'InventoryScreen',
+                          itemCount: items.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final item = items[index];
+                            return ItemListTile(
+                              item: item,
+                              onTap: () => _onTapItem(item),
+                            );
+                          },
+                        ),
+                      );
+      }),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () =>
+            Navigator.restorablePushNamed(context, AddItemScreen.routeName),
+      ),
+    );
   }
 }

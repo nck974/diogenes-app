@@ -73,7 +73,24 @@ class InventoryProvider extends ChangeNotifier {
     _startLoading();
     await ItemService().deleteItem(item.id);
     await fetchAllItems(true);
-    _endLoading();
+    notifyListeners();
+  }
+
+  /// Add a new item. Everything is refreshed to prevent issues with the
+  /// pagination
+  Future<void> addItem(Item item) async {
+    _startLoading();
+    await ItemService().addItem(item);
+    await fetchAllItems(true);
+    notifyListeners();
+  }
+
+  /// Add a new item. Everything is refreshed to prevent issues with the
+  /// pagination
+  Future<void> editItem(Item item) async {
+    _startLoading();
+    await ItemService().editItem(item);
+    await fetchAllItems(true);
     notifyListeners();
   }
 }

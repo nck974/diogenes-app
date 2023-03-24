@@ -17,6 +17,7 @@ class ItemListTile extends StatelessWidget {
     return ListTile(
         key: Key(item.id.toString()),
         title: Text(item.name),
+        subtitle: Text("Amount: ${item.number}"),
         leading: const CircleAvatar(
           // Display the Flutter Logo image asset.
           foregroundImage: AssetImage('assets/images/flutter_logo.png'),

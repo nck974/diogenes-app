@@ -1,3 +1,4 @@
+import 'package:diogenes/src/add_item/add_item_screen.dart';
 import 'package:diogenes/src/inventory/inventory_screen.dart';
 import 'package:diogenes/src/item_detail/item_detail_screen.dart';
 import 'package:diogenes/src/models/item.dart';
@@ -18,6 +19,32 @@ class Diogenes extends StatelessWidget {
   });
 
   final SettingsController settingsController;
+
+  /// Manage the app routes
+  Route<dynamic>? onGenerateRouter(RouteSettings routeSettings) {
+    return MaterialPageRoute<void>(
+      settings: routeSettings,
+      builder: (BuildContext context) {
+        switch (routeSettings.name) {
+          case SettingsView.routeName:
+            return SettingsView(controller: settingsController);
+
+          case ItemDetailScreen.routeName:
+            // Extract the Item object from the arguments property of the RouteSettings object.
+            final item = routeSettings.arguments as Item;
+            return ItemDetailScreen(item: item);
+
+          case AddItemScreen.routeName:
+            // Extract the Item object optionally from the arguments property of the RouteSettings object.
+            final item = routeSettings.arguments as Item?;
+            return AddItemScreen(item: item);
+
+          default:
+            return const InventoryScreen();
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,24 +99,7 @@ class Diogenes extends StatelessWidget {
 
             // Define a function to handle named routes in order to support
             // Flutter web url navigation and deep linking.
-            onGenerateRoute: (RouteSettings routeSettings) {
-              return MaterialPageRoute<void>(
-                settings: routeSettings,
-                builder: (BuildContext context) {
-                  switch (routeSettings.name) {
-                    case SettingsView.routeName:
-                      return SettingsView(controller: settingsController);
-                    case ItemDetailScreen.routeName:
-                      // Extract the Item object from the arguments property of the RouteSettings object.
-                      final item = routeSettings.arguments as Item;
-                      return ItemDetailScreen(item: item);
-                    // case SampleItemListView.routeName:
-                    default:
-                      return const InventoryScreen();
-                  }
-                },
-              );
-            },
+            onGenerateRoute: onGenerateRouter,
           ),
         );
       },
