@@ -37,8 +37,12 @@
 
 
   "settingsTitle": "Settings",
+
   "settingsTitleThemeOptionSystem": "System Theme",
   "settingsTitleThemeOptionLight": "Light Theme",
-  "settingsTitleThemeOptionDark": "Dark Theme"
+  "settingsTitleThemeOptionDark": "Dark Theme",
+
+  "settingsLanguageOptionEnglish": "English",
+  "settingsLanguageOptionSpanish": "Spanish"
 
 }

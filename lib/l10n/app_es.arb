@@ -37,8 +37,12 @@
 
 
   "settingsTitle": "Ajustes",
+
   "settingsTitleThemeOptionSystem": "Colores del sistema",
   "settingsTitleThemeOptionLight": "Modo claro",
-  "settingsTitleThemeOptionDark": "Modo oscuro"
+  "settingsTitleThemeOptionDark": "Modo oscuro",
+
+  "settingsLanguageOptionEnglish": "Inglés",
+  "settingsLanguageOptionSpanish": "Español"
 
 }
