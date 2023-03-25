@@ -23,7 +23,7 @@ class ItemService {
     http.Response response;
     try {
       response =
-          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 5));
+          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 30));
     } on TimeoutException {
       logger.e("Timeout reaching the server");
       throw const CustomTimeoutException("Timeout trying to reach the server.");

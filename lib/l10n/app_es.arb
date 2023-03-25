@@ -1,0 +1,44 @@
+{
+  "appTitle": "Diogenes",
+  "inventoryTitle": "Inventario",
+  "inventoryNoItems": "Ningún ítem disponible.",
+
+
+  "itemDetailAmount": "Cantidad",
+
+
+  "itemListTile": "Cantidad: {number}",
+  "@itemListTile": {
+    "description": "The number of items",
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  },
+
+
+  "addItemTitleAdd": "Añadir ítem",
+  "addItemTitleEdit": "Editar ítem",
+
+  "addItemName": "Nombre",
+  "addItemDescription": "Descripción",
+  "addItemNumber": "Número",
+
+  "addItemAddItemButton": "Añadir ítem",
+  "addItemEditItemButton": "Guardar",
+
+  "addItemValidationEmptyNumber": "Introduce un número",
+  "addItemValidationEmptyName": "Introduce un nombre",
+  "addItemValidationNameMaxLength": "Longitud máx. 50 caracteres",
+  "addItemValidationDescriptionMaxLength": "Longitud máx. 2000 caracteres",
+  "addItemValidationInvalidNumber": "Introduce un número válido",
+
+
+  "settingsTitle": "Ajustes",
+  "settingsTitleThemeOptionSystem": "Colores del sistema",
+  "settingsTitleThemeOptionLight": "Modo claro",
+  "settingsTitleThemeOptionDark": "Modo oscuro"
+
+}

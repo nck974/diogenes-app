@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
+
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:diogenes/src/add_item/add_item_screen.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 /// Displays detailed information of an item.
 class ItemDetailScreen extends StatefulWidget {
@@ -17,6 +20,13 @@ class ItemDetailScreen extends StatefulWidget {
 
 class _ItemDetailScreenState extends State<ItemDetailScreen> {
   bool _isLoading = false;
+  late AppLocalizations _translations;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _translations = AppLocalizations.of(context)!;
+  }
 
   /// Show the details of the item
   /// TODO: Get actual image from backend
@@ -44,7 +54,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
   Widget _displayNumberOfElements() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Text("Amount: ${widget.item.number}"),
+      child: Text("${_translations.itemDetailAmount}: ${widget.item.number}"),
     );
   }
 

@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
+
 import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/services/inventory_service.dart';
-import 'package:flutter/material.dart';
 
 class InventoryProvider extends ChangeNotifier {
   final List<Item> _items = [];

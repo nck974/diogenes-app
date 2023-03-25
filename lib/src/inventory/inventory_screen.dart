@@ -1,15 +1,15 @@
-import 'package:diogenes/src/add_item/add_item_screen.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/item_detail/item_detail_screen.dart';
+import 'package:diogenes/src/add_item/add_item_screen.dart';
 import 'package:diogenes/src/widgets/item_list_tile.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
-
-import '../settings/settings_view.dart';
+import 'package:diogenes/src/settings/settings_view.dart';
 
 /// Displays a list with all the items in the inventory.
 class InventoryScreen extends StatefulWidget {
@@ -79,9 +79,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final translations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inventory'),
+        title: Text(translations.inventoryTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -101,7 +102,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             : provider.errorMessage != null
                 ? Center(child: Text(provider.errorMessage!))
                 : items.isEmpty
-                    ? const Center(child: Text('You do not have any item yet.'))
+                    ? Center(child: Text(translations.inventoryNoItems))
                     : SmartRefresher(
                         enablePullUp: false,
                         onRefresh: _onRefresh,

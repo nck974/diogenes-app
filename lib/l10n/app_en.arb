@@ -1,0 +1,44 @@
+{
+  "appTitle": "Diogenes",
+  "inventoryTitle": "Inventory",
+  "inventoryNoItems": "You do not have any item yet.",
+
+
+  "itemDetailAmount": "Amount",
+
+
+  "itemListTile": "Amount: {number}",
+  "@itemListTile": {
+    "description": "The number of items",
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  },
+
+
+  "addItemTitleAdd": "Add item",
+  "addItemTitleEdit": "Edit item",
+
+  "addItemName": "Name",
+  "addItemDescription": "Description",
+  "addItemNumber": "Number",
+
+  "addItemAddItemButton": "Add item",
+  "addItemEditItemButton": "Save",
+
+  "addItemValidationEmptyNumber": "Please enter a number",
+  "addItemValidationEmptyName": "Please enter a name",
+  "addItemValidationNameMaxLength": "Max. length is 50 characters",
+  "addItemValidationDescriptionMaxLength": "Max. length is 2000 characters",
+  "addItemValidationInvalidNumber": "Please enter a valid number",
+
+
+  "settingsTitle": "Settings",
+  "settingsTitleThemeOptionSystem": "System Theme",
+  "settingsTitleThemeOptionLight": "Light Theme",
+  "settingsTitleThemeOptionDark": "Dark Theme"
+
+}
