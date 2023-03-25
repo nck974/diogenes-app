@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// you'd like to store settings on a web server, use the http package.
 class SettingsService {
   static const _themeModeProperty = 'settings.theme.themeMode';
+  static const _localeProperty = 'settings.locale.language';
   final _logger = Logger();
 
   /// Loads the User's preferred ThemeMode from local or remote storage.
@@ -29,12 +32,52 @@ class SettingsService {
     return ThemeMode.system;
   }
 
+  /// Persists the property in the memory shared preferences.
+  Future<void> _updateSharedProperty(String property, dynamic value) async {
+    _logger.d("Saving in '$property' value: ${value.toString()}");
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.setString(property, value.toString());
+  }
+
   /// Persists the user's preferred ThemeMode to local or remote storage.
   Future<void> updateThemeMode(ThemeMode theme) async {
-    // Use the shared_preferences package to persist settings locally or the
-    // http package to persist settings over the network.
-    _logger.d("Saving in '$_themeModeProperty' value: ${theme.toString()}");
+    _updateSharedProperty(_themeModeProperty, theme);
+  }
+
+  /// Loads the User's local.
+  Future<Locale> locale() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_themeModeProperty, theme.toString());
+    final String? locale = preferences.getString(_localeProperty);
+    if (locale != null) {
+      if (locale == const Locale.fromSubtags(languageCode: "en").toString()) {
+        _logger.d("English locale found the settings");
+        return const Locale.fromSubtags(languageCode: "en");
+      } else if (locale ==
+          const Locale.fromSubtags(languageCode: "es").toString()) {
+        _logger.d("Spanish locale found the settings");
+        return const Locale.fromSubtags(languageCode: "es");
+      } else {
+        _logger.d("Invalid locale found in the settings $locale");
+      }
+    }
+
+    /// Try to obtain the default locale of the system if is in the available
+    /// languages
+    var systemLocale = Platform.localeName;
+    if (systemLocale.isNotEmpty) {
+      if (systemLocale.length > 2) {
+        systemLocale = systemLocale.split("_")[0];
+      }
+      if (["en", "de"].contains(systemLocale)) {
+        return Locale.fromSubtags(languageCode: systemLocale);
+      }
+    }
+
+    return const Locale.fromSubtags(languageCode: "en");
+  }
+
+  /// Persists the user's preferred locale to local or remote storage.
+  Future<void> updateLocale(Locale locale) async {
+    _updateSharedProperty(_localeProperty, locale);
   }
 }

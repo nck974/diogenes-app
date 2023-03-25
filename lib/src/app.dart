@@ -1,27 +1,29 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:diogenes/src/add_item/add_item_screen.dart';
 import 'package:diogenes/src/inventory/inventory_screen.dart';
 import 'package:diogenes/src/item_detail/item_detail_screen.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
 
-import 'settings/settings_controller.dart';
-import 'settings/settings_view.dart';
+import 'package:diogenes/src/settings/settings_controller.dart';
+import 'package:diogenes/src/settings/settings_view.dart';
 
-/// The Widget that configures your application.
+/// The Widget that configures the application.
 class Diogenes extends StatelessWidget {
+  final SettingsController settingsController;
+
   const Diogenes({
     super.key,
     required this.settingsController,
   });
 
-  final SettingsController settingsController;
-
   /// Manage the app routes
-  Route<dynamic>? onGenerateRouter(RouteSettings routeSettings) {
+  Route<dynamic>? onGenerateRoute(RouteSettings routeSettings) {
     return MaterialPageRoute<void>(
       settings: routeSettings,
       builder: (BuildContext context) {
@@ -81,6 +83,7 @@ class Diogenes extends StatelessWidget {
               Locale('en', ''), // English, no country code
               Locale('es', ''), // Spanish, no country code
             ],
+            locale: settingsController.locale,
 
             // Use AppLocalizations to configure the correct application title
             // depending on the user's locale.
@@ -99,7 +102,7 @@ class Diogenes extends StatelessWidget {
 
             // Define a function to handle named routes in order to support
             // Flutter web url navigation and deep linking.
-            onGenerateRoute: onGenerateRouter,
+            onGenerateRoute: onGenerateRoute,
           ),
         );
       },

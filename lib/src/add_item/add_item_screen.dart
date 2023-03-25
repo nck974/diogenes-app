@@ -1,6 +1,8 @@
-import 'package:diogenes/src/providers/inventory_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:diogenes/src/providers/inventory_provider.dart';
 import 'package:diogenes/src/models/item.dart';
 
 class AddItemScreen extends StatefulWidget {
@@ -22,12 +24,18 @@ class _AddItemScreenState extends State<AddItemScreen> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _numberController = TextEditingController();
-
+  late AppLocalizations _translations;
   @override
   void initState() {
     super.initState();
     // Editing mode
     _prefillParameters();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _translations = AppLocalizations.of(context)!;
   }
 
   /// Set the value of the provided values
@@ -45,17 +53,17 @@ class _AddItemScreenState extends State<AddItemScreen> {
   /// Show the number form
   TextFormField _displayNumberForm() {
     return TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Number',
+      decoration: InputDecoration(
+        labelText: _translations.addItemNumber,
       ),
       controller: _numberController,
       keyboardType: TextInputType.number,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter a number';
+          return _translations.addItemValidationEmptyNumber;
         }
         if (int.tryParse(value) == null) {
-          return 'Please enter a valid number';
+          return _translations.addItemValidationInvalidNumber;
         }
         return null;
       },
@@ -65,31 +73,31 @@ class _AddItemScreenState extends State<AddItemScreen> {
   /// Show the description form
   TextFormField _displayDescriptionForm() {
     return TextFormField(
+      decoration: InputDecoration(
+        labelText: _translations.addItemDescription,
+      ),
       controller: _descriptionController,
       validator: (value) {
         if (value != null && value.length > 200) {
-          return 'Max. length is 2000 characters';
+          return _translations.addItemValidationDescriptionMaxLength;
         }
         return null;
       },
-      decoration: const InputDecoration(
-        labelText: 'Description',
-      ),
     );
   }
 
   /// Show the name form
   TextFormField _displayNameForm() {
     return TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Name',
+      decoration: InputDecoration(
+        labelText: _translations.addItemName,
       ),
       controller: _nameController,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter a name';
+          return _translations.addItemValidationEmptyName;
         } else if (value.length > 50) {
-          return 'Max. length is 50 characters';
+          return _translations.addItemValidationNameMaxLength;
         }
         return null;
       },
@@ -121,8 +129,12 @@ class _AddItemScreenState extends State<AddItemScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          AppBar(title: Text(widget.item == null ? "Add item" : "Edit item")),
+      appBar: AppBar(
+          title: Text(
+        widget.item == null
+            ? _translations.addItemTitleAdd
+            : _translations.addItemTitleEdit,
+      )),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: Consumer<InventoryProvider>(builder: (_, provider, __) {
@@ -139,7 +151,9 @@ class _AddItemScreenState extends State<AddItemScreen> {
                       const SizedBox(height: 16.0),
                       ElevatedButton(
                         onPressed: _saveItem,
-                        child: Text(widget.item == null ? 'Add Item' : 'Save'),
+                        child: Text(widget.item == null
+                            ? _translations.addItemAddItemButton
+                            : _translations.addItemEditItemButton),
                       ),
                     ],
                   ),

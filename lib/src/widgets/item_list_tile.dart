@@ -1,5 +1,8 @@
-import 'package:diogenes/src/models/item.dart';
 import 'package:flutter/material.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:diogenes/src/models/item.dart';
 
 /// List tile that shows the overview of an item
 class ItemListTile extends StatelessWidget {
@@ -17,7 +20,11 @@ class ItemListTile extends StatelessWidget {
     return ListTile(
         key: Key(item.id.toString()),
         title: Text(item.name),
-        subtitle: Text("Amount: ${item.number}"),
+        subtitle: Text(
+          AppLocalizations.of(context)!.itemListTile(
+            item.number.toString(),
+          ),
+        ),
         leading: const CircleAvatar(
           // Display the Flutter Logo image asset.
           foregroundImage: AssetImage('assets/images/flutter_logo.png'),

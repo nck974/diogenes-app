@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'src/app.dart';
-import 'src/settings/settings_controller.dart';
-import 'src/settings/settings_service.dart';
+import 'package:diogenes/src/app.dart';
+import 'package:diogenes/src/settings/settings_controller.dart';
+import 'package:diogenes/src/settings/settings_service.dart';
 
 void main() async {
   /// Ensure that the widgets are initialized before using any services or

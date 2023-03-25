@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
+
 import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/models/request.dart';
-import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
 
 class ItemService {
   static const String baseUrl = 'http://10.0.2.2:8080/api/v1/item/';
@@ -23,7 +24,7 @@ class ItemService {
     http.Response response;
     try {
       response =
-          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 5));
+          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 30));
     } on TimeoutException {
       logger.e("Timeout reaching the server");
       throw const CustomTimeoutException("Timeout trying to reach the server.");
