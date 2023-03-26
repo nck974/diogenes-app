@@ -43,6 +43,10 @@
   "settingsTitleThemeOptionDark": "Dark Theme",
 
   "settingsLanguageOptionEnglish": "English",
-  "settingsLanguageOptionSpanish": "Spanish"
+  "settingsLanguageOptionSpanish": "Spanish",
+
+  "settingsBackendUrl": "Server URL",
+  "settingsValidationNoUrl": "Enter a URL",
+  "settingsValidationInvalidPath": "Enter a valid URL"
 
 }

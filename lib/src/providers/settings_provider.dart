@@ -17,10 +17,12 @@ class SettingsController with ChangeNotifier {
   // also persisting the changes with the SettingsService.
   late ThemeMode _themeMode;
   late Locale _locale;
+  late String _backendUrl;
 
-  // Allow Widgets to read the user's preferred ThemeMode.
+  // Allow Widgets to read the settings.
   ThemeMode get themeMode => _themeMode;
   Locale get locale => _locale;
+  String get backendUrl => _backendUrl;
 
   /// Load the user's settings from the SettingsService. It may load from a
   /// local database or the internet. The controller only knows it can load the
@@ -28,6 +30,7 @@ class SettingsController with ChangeNotifier {
   Future<void> loadSettings() async {
     _themeMode = await _settingsService.themeMode();
     _locale = await _settingsService.locale();
+    _backendUrl = await _settingsService.backendUrl();
 
     // Important! Inform listeners a change has occurred.
     notifyListeners();
@@ -67,5 +70,23 @@ class SettingsController with ChangeNotifier {
     // Persist the changes to a local database or the internet using the
     // SettingService.
     await _settingsService.updateLocale(newLocale);
+  }
+
+  /// Update and persist the backendUrl provided by the user.
+  Future<void> updateBackendUrl(String? backendUrl) async {
+    if (backendUrl == null) return;
+
+    // Do not perform any work if new and old backendUrl are identical
+    if (_backendUrl == backendUrl) return;
+
+    // Otherwise, store the new ThemeMode in memory
+    _backendUrl = backendUrl;
+
+    // Important! Inform listeners a change has occurred.
+    notifyListeners();
+
+    // Persist the changes to a local database or the internet using the
+    // SettingService.
+    await _settingsService.updateBackendUrl(backendUrl);
   }
 }

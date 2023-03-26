@@ -5,6 +5,7 @@ import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/services/inventory_service.dart';
 
 class InventoryProvider extends ChangeNotifier {
+  String _backendUrl;
   final List<Item> _items = [];
   final int _pageSize = 20;
   int _pageNumber = 0;
@@ -12,9 +13,16 @@ class InventoryProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 
+  InventoryProvider({required backendUrl}) : _backendUrl = backendUrl;
+
   List<Item> get items => List.unmodifiable(_items);
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+
+  /// Update
+  set backendUrl(String backendUrl) {
+    _backendUrl = backendUrl;
+  }
 
   /// Notify listeners that the request is loading
   void _startLoading() {
@@ -52,7 +60,7 @@ class InventoryProvider extends ChangeNotifier {
     // Fetch
     _startLoading();
     try {
-      final response = await ItemService()
+      final response = await ItemService(backendUrl: _backendUrl)
           .fetchAllItems(offset: _pageNumber, pageSize: _pageSize);
       _lastPage = response.lastPage;
       final items = response.items.map((e) => Item.fromJson(e)).toList();
@@ -74,7 +82,7 @@ class InventoryProvider extends ChangeNotifier {
   /// pagination
   Future<void> deleteItem(Item item) async {
     _startLoading();
-    await ItemService().deleteItem(item.id);
+    await ItemService(backendUrl: _backendUrl).deleteItem(item.id);
     await fetchAllItems(true);
     notifyListeners();
   }
@@ -83,7 +91,7 @@ class InventoryProvider extends ChangeNotifier {
   /// pagination
   Future<void> addItem(Item item) async {
     _startLoading();
-    await ItemService().addItem(item);
+    await ItemService(backendUrl: _backendUrl).addItem(item);
     await fetchAllItems(true);
     notifyListeners();
   }
@@ -92,7 +100,7 @@ class InventoryProvider extends ChangeNotifier {
   /// pagination
   Future<void> editItem(Item item) async {
     _startLoading();
-    await ItemService().editItem(item);
+    await ItemService(backendUrl: _backendUrl).editItem(item);
     await fetchAllItems(true);
     notifyListeners();
   }

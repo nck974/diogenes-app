@@ -59,7 +59,9 @@ class Diogenes extends StatelessWidget {
       builder: (BuildContext context, Widget? child) {
         return MultiProvider(
           providers: [
-            ChangeNotifierProvider(create: (_) => InventoryProvider()),
+            ChangeNotifierProvider(
+                create: (_) => InventoryProvider(
+                    backendUrl: settingsController.backendUrl)),
           ],
           child: MaterialApp(
             // Providers
