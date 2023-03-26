@@ -3,6 +3,9 @@
   "inventoryTitle": "Inventory",
   "inventoryNoItems": "You do not have any item yet.",
 
+  "inventoryMenuSettings": "Settings",
+  "inventoryMenuCategories": "Categories",
+  "inventoryMenuLogout": "Logout",
 
   "itemDetailAmount": "Amount",
 

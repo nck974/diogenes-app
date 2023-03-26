@@ -3,6 +3,9 @@
   "inventoryTitle": "Inventario",
   "inventoryNoItems": "Ningún ítem disponible.",
 
+  "inventoryMenuSettings": "Ajustes",
+  "inventoryMenuCategories": "Categorías",
+  "inventoryMenuLogout": "Logout",
 
   "itemDetailAmount": "Cantidad",
 
