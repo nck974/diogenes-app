@@ -37,6 +37,8 @@ class InventoryProvider extends ChangeNotifier {
 
   /// Download the list of items
   Future<void> fetchAllItems(bool refresh) async {
+    // Clear previous error messages
+    _errorMessage = null;
     // On refresh clear everything
     if (refresh) {
       _reset();
