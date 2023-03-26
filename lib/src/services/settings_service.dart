@@ -10,8 +10,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// persist the user settings locally, use the shared_preferences package. If
 /// you'd like to store settings on a web server, use the http package.
 class SettingsService {
+  static const _defaultBackendURL = 'http://10.0.2.2:8080';
+
   static const _themeModeProperty = 'settings.theme.themeMode';
+  static const _backendUrlProperty = 'settings.backendServer.url';
   static const _localeProperty = 'settings.locale.language';
+
   final _logger = Logger();
 
   /// Loads the User's preferred ThemeMode from local or remote storage.
@@ -79,5 +83,24 @@ class SettingsService {
   /// Persists the user's preferred locale to local or remote storage.
   Future<void> updateLocale(Locale locale) async {
     _updateSharedProperty(_localeProperty, locale);
+  }
+
+  /// Loads the  backendUrl.
+  Future<String> backendUrl() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    final String? url = preferences.getString(_backendUrlProperty);
+    if (url != null) {
+      _logger.d("URL found in settings $url");
+      return url;
+    }
+    _logger
+        .d("URL not found in settings. Using default url: $_defaultBackendURL");
+
+    return _defaultBackendURL;
+  }
+
+  /// Persists the user's backendUrl to local or remote storage.
+  Future<void> updateBackendUrl(String backendUrl) async {
+    _updateSharedProperty(_backendUrlProperty, backendUrl);
   }
 }

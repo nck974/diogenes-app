@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:diogenes/src/add_item/add_item_screen.dart';
+import 'package:diogenes/src/core/add_item/add_item_screen.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
 

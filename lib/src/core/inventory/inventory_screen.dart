@@ -5,11 +5,11 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 
 import 'package:diogenes/src/models/item.dart';
-import 'package:diogenes/src/item_detail/item_detail_screen.dart';
-import 'package:diogenes/src/add_item/add_item_screen.dart';
+import 'package:diogenes/src/core/item_detail/item_detail_screen.dart';
+import 'package:diogenes/src/core/add_item/add_item_screen.dart';
 import 'package:diogenes/src/widgets/item_list_tile.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
-import 'package:diogenes/src/settings/settings_view.dart';
+import 'package:diogenes/src/core/settings/settings_screen.dart';
 
 /// Displays a list with all the items in the inventory.
 class InventoryScreen extends StatefulWidget {
@@ -99,30 +99,30 @@ class _InventoryScreenState extends State<InventoryScreen> {
         final items = provider.items;
         return provider.isLoading
             ? const Center(child: CircularProgressIndicator())
-            : provider.errorMessage != null
-                ? Center(child: Text(provider.errorMessage!))
-                : items.isEmpty
-                    ? Center(child: Text(translations.inventoryNoItems))
-                    : SmartRefresher(
-                        enablePullUp: false,
-                        onRefresh: _onRefresh,
-                        controller: _refreshController,
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          // Providing a restorationId allows the ListView to restore the
-                          // scroll position when a user leaves and returns to the app after it
-                          // has been killed while running in the background.
-                          restorationId: 'InventoryScreen',
-                          itemCount: items.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final item = items[index];
-                            return ItemListTile(
-                              item: item,
-                              onTap: () => _onTapItem(item),
-                            );
-                          },
-                        ),
-                      );
+            : SmartRefresher(
+                enablePullUp: false,
+                onRefresh: _onRefresh,
+                controller: _refreshController,
+                child: provider.errorMessage != null
+                    ? Center(child: Text(provider.errorMessage!))
+                    : items.isEmpty
+                        ? Center(child: Text(translations.inventoryNoItems))
+                        : ListView.builder(
+                            controller: _scrollController,
+                            // Providing a restorationId allows the ListView to restore the
+                            // scroll position when a user leaves and returns to the app after it
+                            // has been killed while running in the background.
+                            restorationId: 'InventoryScreen',
+                            itemCount: items.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final item = items[index];
+                              return ItemListTile(
+                                item: item,
+                                onTap: () => _onTapItem(item),
+                              );
+                            },
+                          ),
+              );
       }),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),

@@ -43,6 +43,10 @@
   "settingsTitleThemeOptionDark": "Modo oscuro",
 
   "settingsLanguageOptionEnglish": "Inglés",
-  "settingsLanguageOptionSpanish": "Español"
+  "settingsLanguageOptionSpanish": "Español",
+
+  "settingsBackendUrl": "URL del servidor",
+  "settingsValidationNoUrl": "Introduce una URL",
+  "settingsValidationInvalidPath": "Introduce una URL válida"
 
 }

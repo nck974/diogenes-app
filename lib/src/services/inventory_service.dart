@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart' as http;
 import 'package:logger/logger.dart';
 
 import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
@@ -9,8 +11,19 @@ import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/models/request.dart';
 
 class ItemService {
-  static const String baseUrl = 'http://10.0.2.2:8080/api/v1/item/';
+  static const itemPath = '/api/v1/item/';
+  late String baseUrl;
+  final String backendUrl;
   var logger = Logger();
+
+  ItemService({required this.backendUrl}) : baseUrl = "$backendUrl$itemPath";
+
+  /// Return the client with a set timeout
+  http.IOClient _client() {
+    final ioClient = HttpClient();
+    ioClient.connectionTimeout = const Duration(seconds: 30);
+    return http.IOClient(ioClient);
+  }
 
   /// Fetch all items of the inventory
   Future<PaginatedResponseData<Item>> fetchAllItems({
@@ -23,9 +36,8 @@ class ItemService {
 
     http.Response response;
     try {
-      response =
-          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 30));
-    } on TimeoutException {
+      response = await _client().get(Uri.parse(url));
+    } on SocketException {
       logger.e("Timeout reaching the server");
       throw const CustomTimeoutException("Timeout trying to reach the server.");
     }
@@ -56,7 +68,7 @@ class ItemService {
   Future<void> deleteItem(int id) async {
     final url = "$baseUrl$id";
     logger.d("Deleting item on $url");
-    final response = await http.delete(Uri.parse(url));
+    final response = await _client().delete(Uri.parse(url));
 
     if (response.statusCode != 204) {
       throw Exception(
@@ -67,16 +79,16 @@ class ItemService {
   /// Add an item
   Future<void> addItem(Item item) async {
     final headers = {'Content-Type': 'application/json'};
-    const url = baseUrl;
+    final url = baseUrl;
     logger.d("Adding item on $url");
     http.Response response;
     try {
-      response = await http.post(
+      response = await _client().post(
         Uri.parse(url),
         headers: headers,
         body: json.encode(item.toJson()),
       );
-    } on TimeoutException {
+    } on SocketException {
       logger.e("Timeout reaching the server");
       throw const CustomTimeoutException("Timeout trying to reach the server.");
     }
@@ -94,12 +106,12 @@ class ItemService {
     logger.d("Editing item on $url");
     http.Response response;
     try {
-      response = await http.put(
+      response = await _client().put(
         Uri.parse(url),
         headers: headers,
         body: json.encode(item.toJson()),
       );
-    } on TimeoutException {
+    } on SocketException {
       logger.e("Timeout reaching the server");
       throw const CustomTimeoutException("Timeout trying to reach the server.");
     }

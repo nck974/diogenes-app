@@ -4,14 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:diogenes/src/add_item/add_item_screen.dart';
-import 'package:diogenes/src/inventory/inventory_screen.dart';
-import 'package:diogenes/src/item_detail/item_detail_screen.dart';
+import 'package:diogenes/src/core/add_item/add_item_screen.dart';
+import 'package:diogenes/src/core/inventory/inventory_screen.dart';
+import 'package:diogenes/src/core/item_detail/item_detail_screen.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
 
-import 'package:diogenes/src/settings/settings_controller.dart';
-import 'package:diogenes/src/settings/settings_view.dart';
+import 'package:diogenes/src/providers/settings_provider.dart';
+import 'package:diogenes/src/core/settings/settings_screen.dart';
 
 /// The Widget that configures the application.
 class Diogenes extends StatelessWidget {
@@ -59,7 +59,9 @@ class Diogenes extends StatelessWidget {
       builder: (BuildContext context, Widget? child) {
         return MultiProvider(
           providers: [
-            ChangeNotifierProvider(create: (_) => InventoryProvider()),
+            ChangeNotifierProvider(
+                create: (_) => InventoryProvider(
+                    backendUrl: settingsController.backendUrl)),
           ],
           child: MaterialApp(
             // Providers
