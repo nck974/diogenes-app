@@ -77,24 +77,71 @@ class _InventoryScreenState extends State<InventoryScreen> {
         arguments: item);
   }
 
+  /// Display the list of items
+  ListView _displayInventory(List<Item> items) {
+    return ListView.builder(
+      controller: _scrollController,
+      // Providing a restorationId allows the ListView to restore the
+      // scroll position when a user leaves and returns to the app after it
+      // has been killed while running in the background.
+      restorationId: 'InventoryScreen',
+      itemCount: items.length,
+      itemBuilder: (BuildContext context, int index) {
+        final item = items[index];
+        return ItemListTile(
+          item: item,
+          onTap: () => _onTapItem(item),
+        );
+      },
+    );
+  }
+
+  /// Display the app bar
+  AppBar _displayAppBar(AppLocalizations translations) {
+    return AppBar(
+      title: Text(translations.inventoryTitle),
+      actions: [
+        PopupMenuButton(
+            // add icon, by default "3 dot" icon
+            // icon: Icon(Icons.book)
+            itemBuilder: (context) {
+          return [
+            PopupMenuItem<int>(
+              value: 0,
+              enabled: false,
+              child: Text(translations.inventoryMenuCategories),
+            ),
+            PopupMenuItem<int>(
+              value: 1,
+              child: Text(translations.inventoryMenuSettings),
+            ),
+            PopupMenuItem<int>(
+              value: 2,
+              enabled: false,
+              child: Text(translations.inventoryMenuLogout),
+            ),
+          ];
+        }, onSelected: (value) {
+          if (value == 0) {
+            print("Categories is selected. TODO"); // TODO
+          } else if (value == 1) {
+            // Navigate to the settings page. If the user leaves and returns
+            // to the app after it has been killed while running in the
+            // background, the navigation stack is restored.
+            Navigator.restorablePushNamed(context, SettingsView.routeName);
+          } else if (value == 2) {
+            print("Logout menu is selected.");
+          }
+        }),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final translations = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(translations.inventoryTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              // Navigate to the settings page. If the user leaves and returns
-              // to the app after it has been killed while running in the
-              // background, the navigation stack is restored.
-              Navigator.restorablePushNamed(context, SettingsView.routeName);
-            },
-          ),
-        ],
-      ),
+      appBar: _displayAppBar(translations),
       body: Consumer<InventoryProvider>(builder: (context, provider, _) {
         final items = provider.items;
         return provider.isLoading
@@ -107,21 +154,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                     ? Center(child: Text(provider.errorMessage!))
                     : items.isEmpty
                         ? Center(child: Text(translations.inventoryNoItems))
-                        : ListView.builder(
-                            controller: _scrollController,
-                            // Providing a restorationId allows the ListView to restore the
-                            // scroll position when a user leaves and returns to the app after it
-                            // has been killed while running in the background.
-                            restorationId: 'InventoryScreen',
-                            itemCount: items.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              final item = items[index];
-                              return ItemListTile(
-                                item: item,
-                                onTap: () => _onTapItem(item),
-                              );
-                            },
-                          ),
+                        : _displayInventory(items),
               );
       }),
       floatingActionButton: FloatingActionButton(
