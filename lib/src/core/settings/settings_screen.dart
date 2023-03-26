@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:diogenes/src/settings/settings_controller.dart';
+import 'package:diogenes/src/providers/settings_provider.dart';
 
 /// Displays the various settings that can be customized by the user.
 ///

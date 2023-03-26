@@ -5,11 +5,11 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 
 import 'package:diogenes/src/models/item.dart';
-import 'package:diogenes/src/item_detail/item_detail_screen.dart';
-import 'package:diogenes/src/add_item/add_item_screen.dart';
+import 'package:diogenes/src/core/item_detail/item_detail_screen.dart';
+import 'package:diogenes/src/core/add_item/add_item_screen.dart';
 import 'package:diogenes/src/widgets/item_list_tile.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
-import 'package:diogenes/src/settings/settings_view.dart';
+import 'package:diogenes/src/core/settings/settings_screen.dart';
 
 /// Displays a list with all the items in the inventory.
 class InventoryScreen extends StatefulWidget {
