@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/services/inventory_service.dart';
 
@@ -11,13 +10,11 @@ class InventoryProvider extends ChangeNotifier {
   int _pageNumber = 0;
   bool _lastPage = false;
   bool _isLoading = false;
-  String? _errorMessage;
 
   InventoryProvider({required backendUrl}) : _backendUrl = backendUrl;
 
   List<Item> get items => List.unmodifiable(_items);
   bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
 
   /// Update
   set backendUrl(String backendUrl) {
@@ -45,8 +42,6 @@ class InventoryProvider extends ChangeNotifier {
 
   /// Download the list of items
   Future<void> fetchAllItems(bool refresh) async {
-    // Clear previous error messages
-    _errorMessage = null;
     // On refresh clear everything
     if (refresh) {
       _reset();
@@ -71,10 +66,10 @@ class InventoryProvider extends ChangeNotifier {
 
       _items.addAll(items);
       notifyListeners();
-    } on CustomTimeoutException catch (e) {
-      _errorMessage = e.message;
-    } finally {
       _endLoading();
+    } catch (_) {
+      _endLoading();
+      rethrow;
     }
   }
 
@@ -82,7 +77,12 @@ class InventoryProvider extends ChangeNotifier {
   /// pagination
   Future<void> deleteItem(Item item) async {
     _startLoading();
-    await ItemService(backendUrl: _backendUrl).deleteItem(item.id);
+    try {
+      await ItemService(backendUrl: _backendUrl).deleteItem(item.id);
+    } catch (_) {
+      _endLoading();
+      rethrow;
+    }
     await fetchAllItems(true);
     notifyListeners();
   }
@@ -91,17 +91,25 @@ class InventoryProvider extends ChangeNotifier {
   /// pagination
   Future<void> addItem(Item item) async {
     _startLoading();
-    await ItemService(backendUrl: _backendUrl).addItem(item);
-    await fetchAllItems(true);
-    notifyListeners();
+    try {
+      await ItemService(backendUrl: _backendUrl).addItem(item);
+      await fetchAllItems(true);
+    } catch (_) {
+      _endLoading();
+      rethrow;
+    }
   }
 
   /// Add a new item. Everything is refreshed to prevent issues with the
   /// pagination
   Future<void> editItem(Item item) async {
     _startLoading();
-    await ItemService(backendUrl: _backendUrl).editItem(item);
-    await fetchAllItems(true);
-    notifyListeners();
+    try {
+      await ItemService(backendUrl: _backendUrl).editItem(item);
+      await fetchAllItems(true);
+    } catch (_) {
+      _endLoading();
+      rethrow;
+    }
   }
 }

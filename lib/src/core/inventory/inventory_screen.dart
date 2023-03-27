@@ -10,6 +10,8 @@ import 'package:diogenes/src/core/add_item/add_item_screen.dart';
 import 'package:diogenes/src/widgets/item_list_tile.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
 import 'package:diogenes/src/core/settings/settings_screen.dart';
+import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
+import 'package:diogenes/src/exceptions/invalid_response_code_exception.dart';
 
 /// Displays a list with all the items in the inventory.
 class InventoryScreen extends StatefulWidget {
@@ -24,6 +26,7 @@ class InventoryScreen extends StatefulWidget {
 }
 
 class _InventoryScreenState extends State<InventoryScreen> {
+  String? _errorMessage;
   final _scrollController = ScrollController();
 
   final RefreshController _refreshController =
@@ -36,7 +39,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
     super.initState();
     _scrollController.addListener(_scrollListener);
     Future.delayed(const Duration(seconds: 0)).then((e) {
-      _fetchInitialData();
+      _fetchAllItems(true);
     });
   }
 
@@ -47,28 +50,40 @@ class _InventoryScreenState extends State<InventoryScreen> {
     super.dispose();
   }
 
-  /// Fetch the initial data
-  void _fetchInitialData() {
-    context.read<InventoryProvider>().fetchAllItems(true);
-  }
-
   /// Create a listener that fetches data every time you reach the end of the
   /// screen
   void _scrollListener() {
-    final provider = context.read<InventoryProvider>();
-
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      provider.fetchAllItems(false);
+      _fetchAllItems(false);
+    }
+  }
+
+  /// Fetch data from the provider
+  Future<void> _fetchAllItems(bool refresh) async {
+    try {
+      setState(() {
+        _errorMessage = null;
+      });
+      return await context.read<InventoryProvider>().fetchAllItems(refresh);
+    } catch (e) {
+      var translations = AppLocalizations.of(context)!;
+
+      var message = translations.inventoryUnexpectedErrorReachingServer;
+      if (e is CustomTimeoutException) {
+        message = translations.inventoryErrorReachingServer;
+      } else if (e is InvalidResponseCodeException) {
+        message = translations.inventoryHTTPError(e.code);
+      }
+      setState(() {
+        _errorMessage = message;
+      });
     }
   }
 
   /// Action when the list is pulldown to refresh
   void _onRefresh() async {
-    context
-        .read<InventoryProvider>()
-        .fetchAllItems(true)
-        .then((value) => _refreshController.refreshCompleted());
+    _fetchAllItems(true).then((value) => _refreshController.refreshCompleted());
   }
 
   /// Update data if the screen sends a function back
@@ -150,8 +165,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 enablePullUp: false,
                 onRefresh: _onRefresh,
                 controller: _refreshController,
-                child: provider.errorMessage != null
-                    ? Center(child: Text(provider.errorMessage!))
+                child: _errorMessage != null
+                    ? Center(child: Text(_errorMessage!))
                     : items.isEmpty
                         ? Center(child: Text(translations.inventoryNoItems))
                         : _displayInventory(items),

@@ -7,7 +7,24 @@
   "inventoryMenuCategories": "Categorías",
   "inventoryMenuLogout": "Logout",
 
+  "inventoryErrorReachingServer":  "No se puedo encontrar el servidor.",
+  "inventoryUnexpectedErrorReachingServer":  "Hubo un error buscando el servidor",
+  "inventoryHTTPError":  "Error ({code})",
+  "@itemListTile": {
+    "description": "The number of items",
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "404"
+      }
+    }
+  },
+
+
   "itemDetailAmount": "Cantidad",
+
+  "itemDetailCouldNotBeDeleted": "El ítem no pudo ser borrado",
+  "itemDetailErrorReachingTheServer": "No se puedo establecer conexión con el servidor",
 
 
   "itemListTile": "Cantidad: {number}",
@@ -37,6 +54,8 @@
   "addItemValidationNameMaxLength": "Longitud máx. 50 caracteres",
   "addItemValidationDescriptionMaxLength": "Longitud máx. 2000 caracteres",
   "addItemValidationInvalidNumber": "Introduce un número válido",
+
+  "addItemCouldNotBeSaved": "No se ha podido guardar el ítem",
 
 
   "settingsTitle": "Ajustes",

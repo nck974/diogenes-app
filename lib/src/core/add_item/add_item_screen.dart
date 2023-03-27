@@ -106,23 +106,32 @@ class _AddItemScreenState extends State<AddItemScreen> {
 
   /// Validate the form and send the request to backend. If everything is okay
   /// move back to the inventory displaying a popup
-  void _saveItem() {
+  Future<void> _saveItem() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       final name = _nameController.text;
       final description = _descriptionController.text;
       final number = int.parse(_numberController.text);
 
-      if (widget.item == null) {
-        Provider.of<InventoryProvider>(context, listen: false).addItem(
-            Item(id: 0, name: name, description: description, number: number));
-      } else {
-        final updatedItem = widget.item!
-            .copyWith(name: name, description: description, number: number);
-        Provider.of<InventoryProvider>(context, listen: false)
-            .editItem(updatedItem);
-      }
+      try {
+        if (widget.item == null) {
+          await Provider.of<InventoryProvider>(context, listen: false).addItem(
+              Item(
+                  id: 0, name: name, description: description, number: number));
+        } else {
+          final updatedItem = widget.item!
+              .copyWith(name: name, description: description, number: number);
+          await Provider.of<InventoryProvider>(context, listen: false)
+              .editItem(updatedItem);
+        }
 
-      Navigator.pop(context);
+        if (!mounted) return;
+
+        Navigator.pop(context);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(_translations.addItemCouldNotBeSaved),
+        ));
+      }
     }
   }
 

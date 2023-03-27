@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:diogenes/src/core/add_item/add_item_screen.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
+import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
 
 /// Displays detailed information of an item.
 class ItemDetailScreen extends StatefulWidget {
@@ -19,7 +20,6 @@ class ItemDetailScreen extends StatefulWidget {
 }
 
 class _ItemDetailScreenState extends State<ItemDetailScreen> {
-  bool _isLoading = false;
   late AppLocalizations _translations;
 
   @override
@@ -71,55 +71,59 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
     );
   }
 
+  /// Delete an item and on success show a popup that the item was deleted and
+  /// go back
+  Future<void> _onDeleteItem(InventoryProvider inventoryProvider) async {
+    String itemName = widget.item.name;
+    try {
+      await inventoryProvider.deleteItem(widget.item);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Item '$itemName' was deleted"),
+      ));
+      Navigator.of(context).pop();
+    } catch (e) {
+      var errorMessage = _translations.itemDetailCouldNotBeDeleted;
+      if (e is CustomTimeoutException) {
+        errorMessage = _translations.itemDetailErrorReachingTheServer;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(errorMessage),
+      ));
+    }
+  }
+
   /// Display button to delete the item
-  /// TODO: Get isLoading from provider
-  Widget _displayDeleteButton() {
-    return Consumer<InventoryProvider>(builder: (context, itemProvider, _) {
-      return Padding(
-        padding: const EdgeInsets.only(right: 16.0),
-        child: IconButton(
-          icon: const Icon(Icons.delete),
-          onPressed: () {
-            setState(() {
-              _isLoading = true;
-            });
-            String itemName = widget.item.name;
-            itemProvider.deleteItem(widget.item).then((value) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("Item '$itemName' was deleted"),
-              ));
-              Navigator.of(context).pop();
-            }).catchError((error, stackTrace) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(error.message),
-              ));
-            }).whenComplete(() => setState(() {
-                  _isLoading = false;
-                }));
-          },
-        ),
-      );
-    });
+  Widget _displayDeleteButton(InventoryProvider provider) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 16.0),
+      child: IconButton(
+        icon: const Icon(Icons.delete),
+        onPressed: () => _onDeleteItem(provider),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.item.name),
-        actions: [_displayEditButton(), _displayDeleteButton()],
-      ),
-      body: Center(
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  _displayImage(),
-                  _displayNumberOfElements(),
-                  _displayDescription(),
-                ],
-              ),
-      ),
-    );
+    return Consumer<InventoryProvider>(builder: (ctx, provider, _) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.item.name),
+          actions: [_displayEditButton(), _displayDeleteButton(provider)],
+        ),
+        body: Center(
+          child: provider.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    _displayImage(),
+                    _displayNumberOfElements(),
+                    _displayDescription(),
+                  ],
+                ),
+        ),
+      );
+    });
   }
 }

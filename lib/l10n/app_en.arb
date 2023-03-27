@@ -7,7 +7,24 @@
   "inventoryMenuCategories": "Categories",
   "inventoryMenuLogout": "Logout",
 
+  "inventoryErrorReachingServer":  "Timeout reaching the server",
+  "inventoryUnexpectedErrorReachingServer":  "There was an error reaching the server",
+  "inventoryHTTPError":  "Error received ({code})",
+  "@itemListTile": {
+    "description": "The number of items",
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "404"
+      }
+    }
+  },
+
+
   "itemDetailAmount": "Amount",
+
+  "itemDetailCouldNotBeDeleted": "The item could not be deleted",
+  "itemDetailErrorReachingTheServer": "There was an error reaching the server",
 
 
   "itemListTile": "Amount: {number}",
@@ -37,6 +54,8 @@
   "addItemValidationNameMaxLength": "Max. length is 50 characters",
   "addItemValidationDescriptionMaxLength": "Max. length is 2000 characters",
   "addItemValidationInvalidNumber": "Please enter a valid number",
+
+  "addItemCouldNotBeSaved": "The item could not be saved",
 
 
   "settingsTitle": "Settings",
