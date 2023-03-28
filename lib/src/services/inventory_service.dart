@@ -10,6 +10,16 @@ import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
 import 'package:diogenes/src/exceptions/invalid_response_code_exception.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/models/request.dart';
+import 'package:diogenes/src/models/sort_inventory_options.dart';
+
+Map<SortInventoryOptions, String> _sortMapping = {
+  SortInventoryOptions.idASC: "&sortDirection=DESC&sort=ID",
+  SortInventoryOptions.idDESC: "&sortDirection=ASC&sort=ID",
+  SortInventoryOptions.nameASC: "&sortDirection=ASC&sort=NAME",
+  SortInventoryOptions.nameDESC: "&sortDirection=DESC&sort=NAME",
+  SortInventoryOptions.numberASC: "&sortDirection=ASC&sort=NUMBER",
+  SortInventoryOptions.numberDESC: "&sortDirection=DESC&sort=NUMBER",
+};
 
 class ItemService {
   static const itemPath = '/api/v1/item/';
@@ -27,14 +37,20 @@ class ItemService {
   }
 
   /// Fetch all items of the inventory
-  Future<PaginatedResponseData<Item>> fetchAllItems({
-    required int offset,
-    required int pageSize,
-  }) async {
-    final String url =
-        "$baseUrl?pageSize=$pageSize&offset=$offset&sortDirection=DESC";
-    logger.d("Fetching data from $url");
+  Future<PaginatedResponseData<Item>> fetchAllItems(
+      {required int offset,
+      required int pageSize,
+      SortInventoryOptions? sort}) async {
+    String url = "$baseUrl?pageSize=$pageSize&offset=$offset";
 
+    // Sort the data
+    if (sort == null) {
+      url = url + _sortMapping[SortInventoryOptions.idDESC]!;
+    } else {
+      url = url + _sortMapping[sort]!;
+    }
+
+    logger.d("Fetching data from $url");
     http.Response response;
     try {
       response = await _client().get(Uri.parse(url));

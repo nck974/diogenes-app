@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:diogenes/src/models/item.dart';
+import 'package:diogenes/src/models/sort_inventory_options.dart';
 import 'package:diogenes/src/services/inventory_service.dart';
 
 class InventoryProvider extends ChangeNotifier {
@@ -10,6 +11,7 @@ class InventoryProvider extends ChangeNotifier {
   int _pageNumber = 0;
   bool _lastPage = false;
   bool _isLoading = false;
+  SortInventoryOptions? _lastSort;
 
   InventoryProvider({required backendUrl}) : _backendUrl = backendUrl;
 
@@ -41,7 +43,7 @@ class InventoryProvider extends ChangeNotifier {
   }
 
   /// Download the list of items
-  Future<void> fetchAllItems(bool refresh) async {
+  Future<void> fetchAllItems(bool refresh, {SortInventoryOptions? sort}) async {
     // On refresh clear everything
     if (refresh) {
       _reset();
@@ -52,11 +54,18 @@ class InventoryProvider extends ChangeNotifier {
       return;
     }
 
+    // Cache sorting
+    if (sort == null) {
+      sort = _lastSort;
+    } else {
+      _lastSort = sort;
+    }
+
     // Fetch
     _startLoading();
     try {
       final response = await ItemService(backendUrl: _backendUrl)
-          .fetchAllItems(offset: _pageNumber, pageSize: _pageSize);
+          .fetchAllItems(offset: _pageNumber, pageSize: _pageSize, sort: sort);
       _lastPage = response.lastPage;
       final items = response.items.map((e) => Item.fromJson(e)).toList();
 
