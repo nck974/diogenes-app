@@ -69,6 +69,10 @@
 
   "settingsBackendUrl": "Server URL",
   "settingsValidationNoUrl": "Enter a URL",
-  "settingsValidationInvalidPath": "Enter a valid URL"
+  "settingsValidationInvalidPath": "Enter a valid URL",
 
+
+  "sortByID": "ID",
+  "sortByName": "Name",
+  "sortByNumber": "Number"
 }

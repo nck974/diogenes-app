@@ -5,11 +5,13 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 
 import 'package:diogenes/src/models/item.dart';
+import 'package:diogenes/src/models/sort_inventory_options.dart';
+import 'package:diogenes/src/core/inventory/widgets/navigation_menu.dart';
 import 'package:diogenes/src/core/item_detail/item_detail_screen.dart';
 import 'package:diogenes/src/core/add_item/add_item_screen.dart';
 import 'package:diogenes/src/widgets/item_list_tile.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
-import 'package:diogenes/src/core/settings/settings_screen.dart';
+import 'package:diogenes/src/core/inventory/widgets/sort_menu.dart';
 import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
 import 'package:diogenes/src/exceptions/invalid_response_code_exception.dart';
 
@@ -28,6 +30,7 @@ class InventoryScreen extends StatefulWidget {
 class _InventoryScreenState extends State<InventoryScreen> {
   String? _errorMessage;
   final _scrollController = ScrollController();
+  SortInventoryOptions sort = SortInventoryOptions.idDESC;
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -65,7 +68,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
       setState(() {
         _errorMessage = null;
       });
-      return await context.read<InventoryProvider>().fetchAllItems(refresh);
+      return await context
+          .read<InventoryProvider>()
+          .fetchAllItems(refresh, sort: sort);
     } catch (e) {
       var translations = AppLocalizations.of(context)!;
 
@@ -111,43 +116,68 @@ class _InventoryScreenState extends State<InventoryScreen> {
     );
   }
 
+  /// Show a modal with the filters
+  /// TODO: Backend has to be prepared for this
+  // void _onDisplayFilters() {
+  //   showModalBottomSheet<void>(
+  //     context: context,
+  //     useSafeArea: true,
+  //     builder: (BuildContext context) {
+  //       return Padding(
+  //         padding:
+  //             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+  //         child: SizedBox(
+  //           // height: 200,
+  //           child: Center(
+  //             child: Column(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: <Widget>[
+  //                 Form(
+  //                     child: Column(
+  //                   children: [
+  //                     TextFormField(
+  //                       decoration: const InputDecoration(
+  //                         hintText: "Number",
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 )),
+  //                 ElevatedButton(
+  //                   child: const Text('Filter'),
+  //                   onPressed: () => Navigator.pop(context),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
+  void _onSort(SortInventoryOptions value) {
+    setState(() {
+      sort = value;
+    });
+    _fetchAllItems(true);
+  }
+
   /// Display the app bar
   AppBar _displayAppBar(AppLocalizations translations) {
     return AppBar(
       title: Text(translations.inventoryTitle),
       actions: [
-        PopupMenuButton(
-            // add icon, by default "3 dot" icon
-            // icon: Icon(Icons.book)
-            itemBuilder: (context) {
-          return [
-            PopupMenuItem<int>(
-              value: 0,
-              enabled: false,
-              child: Text(translations.inventoryMenuCategories),
-            ),
-            PopupMenuItem<int>(
-              value: 1,
-              child: Text(translations.inventoryMenuSettings),
-            ),
-            PopupMenuItem<int>(
-              value: 2,
-              enabled: false,
-              child: Text(translations.inventoryMenuLogout),
-            ),
-          ];
-        }, onSelected: (value) {
-          if (value == 0) {
-            print("Categories is selected. TODO"); // TODO
-          } else if (value == 1) {
-            // Navigate to the settings page. If the user leaves and returns
-            // to the app after it has been killed while running in the
-            // background, the navigation stack is restored.
-            Navigator.restorablePushNamed(context, SettingsView.routeName);
-          } else if (value == 2) {
-            print("Logout menu is selected.");
-          }
-        }),
+        // IconButton(
+        //   icon: const Icon(Icons.filter_alt_outlined),
+        //   onPressed: _onDisplayFilters,
+        // ),
+        SortMenu(
+          context: context,
+          onSort: _onSort,
+          selectedOption: sort,
+        ),
+        NavigationMenu(context: context),
       ],
     );
   }

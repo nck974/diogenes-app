@@ -12,6 +12,7 @@ An app to manage your home inventory implemented in flutter.
     ```
     English, Spanish
     ```
+1. Sort items.
 
 ## Getting Started
 
