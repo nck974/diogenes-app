@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/models/sort_inventory_options.dart';
+import 'package:diogenes/src/models/filter_inventory.dart';
 import 'package:diogenes/src/services/inventory_service.dart';
 
 class InventoryProvider extends ChangeNotifier {
@@ -12,6 +13,7 @@ class InventoryProvider extends ChangeNotifier {
   bool _lastPage = false;
   bool _isLoading = false;
   SortInventoryOptions? _lastSort;
+  FilterInventory? _lastFilter;
 
   InventoryProvider({required backendUrl}) : _backendUrl = backendUrl;
 
@@ -43,7 +45,8 @@ class InventoryProvider extends ChangeNotifier {
   }
 
   /// Download the list of items
-  Future<void> fetchAllItems(bool refresh, {SortInventoryOptions? sort}) async {
+  Future<void> fetchAllItems(bool refresh,
+      {SortInventoryOptions? sort, FilterInventory? filter}) async {
     // On refresh clear everything
     if (refresh) {
       _reset();
@@ -61,11 +64,18 @@ class InventoryProvider extends ChangeNotifier {
       _lastSort = sort;
     }
 
+    // Cache filtering
+    if (filter == null) {
+      filter = _lastFilter;
+    } else {
+      _lastFilter = filter;
+    }
+
     // Fetch
     _startLoading();
     try {
-      final response = await ItemService(backendUrl: _backendUrl)
-          .fetchAllItems(offset: _pageNumber, pageSize: _pageSize, sort: sort);
+      final response = await ItemService(backendUrl: _backendUrl).fetchAllItems(
+          offset: _pageNumber, pageSize: _pageSize, sort: sort, filter: filter);
       _lastPage = response.lastPage;
       final items = response.items.map((e) => Item.fromJson(e)).toList();
 

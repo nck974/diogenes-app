@@ -6,12 +6,14 @@ import 'package:provider/provider.dart';
 
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/models/sort_inventory_options.dart';
+import 'package:diogenes/src/models/filter_inventory.dart';
 import 'package:diogenes/src/core/inventory/widgets/navigation_menu.dart';
+import 'package:diogenes/src/core/inventory/widgets/filter_modal.dart';
 import 'package:diogenes/src/core/item_detail/item_detail_screen.dart';
 import 'package:diogenes/src/core/add_item/add_item_screen.dart';
+import 'package:diogenes/src/core/inventory/widgets/sort_menu.dart';
 import 'package:diogenes/src/widgets/item_list_tile.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
-import 'package:diogenes/src/core/inventory/widgets/sort_menu.dart';
 import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
 import 'package:diogenes/src/exceptions/invalid_response_code_exception.dart';
 
@@ -31,6 +33,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
   String? _errorMessage;
   final _scrollController = ScrollController();
   SortInventoryOptions sort = SortInventoryOptions.idDESC;
+  FilterInventory? filter;
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -70,7 +73,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
       });
       return await context
           .read<InventoryProvider>()
-          .fetchAllItems(refresh, sort: sort);
+          .fetchAllItems(refresh, sort: sort, filter: filter);
     } catch (e) {
       var translations = AppLocalizations.of(context)!;
 
@@ -116,46 +119,31 @@ class _InventoryScreenState extends State<InventoryScreen> {
     );
   }
 
-  /// Show a modal with the filters
-  /// TODO: Backend has to be prepared for this
-  // void _onDisplayFilters() {
-  //   showModalBottomSheet<void>(
-  //     context: context,
-  //     useSafeArea: true,
-  //     builder: (BuildContext context) {
-  //       return Padding(
-  //         padding:
-  //             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-  //         child: SizedBox(
-  //           // height: 200,
-  //           child: Center(
-  //             child: Column(
-  //               mainAxisAlignment: MainAxisAlignment.center,
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: <Widget>[
-  //                 Form(
-  //                     child: Column(
-  //                   children: [
-  //                     TextFormField(
-  //                       decoration: const InputDecoration(
-  //                         hintText: "Number",
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 )),
-  //                 ElevatedButton(
-  //                   child: const Text('Filter'),
-  //                   onPressed: () => Navigator.pop(context),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  /// Filter the results only when the filter has changed
+  void _onFilter(FilterInventory? newFilter) {
+    if (filter == newFilter) {
+      return;
+    }
+    setState(() {
+      filter = newFilter;
+    });
+    _fetchAllItems(true);
+  }
 
+  /// Show a modal with the filters
+  void _onDisplayFilters() {
+    showModalBottomSheet<void>(
+      context: context,
+      useSafeArea: true,
+      builder: (BuildContext context) {
+        return FilterModal(onFilter: _onFilter, previousFilter: filter);
+      },
+    );
+  }
+
+  /// Update the screen filter and refetch results. No validation is needed on
+  /// sort because changing it to the same is already not possible through the
+  /// UI
   void _onSort(SortInventoryOptions value) {
     setState(() {
       sort = value;
@@ -168,10 +156,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
     return AppBar(
       title: Text(translations.inventoryTitle),
       actions: [
-        // IconButton(
-        //   icon: const Icon(Icons.filter_alt_outlined),
-        //   onPressed: _onDisplayFilters,
-        // ),
+        IconButton(
+          icon: const Icon(Icons.filter_alt_outlined),
+          onPressed: _onDisplayFilters,
+        ),
         SortMenu(
           context: context,
           onSort: _onSort,
@@ -198,7 +186,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 child: _errorMessage != null
                     ? Center(child: Text(_errorMessage!))
                     : items.isEmpty
-                        ? Center(child: Text(translations.inventoryNoItems))
+                        ? Center(
+                            child: Text(filter != null && filter!.isFiltering()
+                                ? translations.inventoryNoItemsFilter
+                                : translations.inventoryNoItems))
                         : _displayInventory(items),
               );
       }),
