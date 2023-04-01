@@ -8,6 +8,7 @@ import 'package:logger/logger.dart';
 
 import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
 import 'package:diogenes/src/exceptions/invalid_response_code_exception.dart';
+import 'package:diogenes/src/models/filter_inventory.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/models/request.dart';
 import 'package:diogenes/src/models/sort_inventory_options.dart';
@@ -40,14 +41,20 @@ class ItemService {
   Future<PaginatedResponseData<Item>> fetchAllItems(
       {required int offset,
       required int pageSize,
-      SortInventoryOptions? sort}) async {
+      SortInventoryOptions? sort,
+      FilterInventory? filter}) async {
     String url = "$baseUrl?pageSize=$pageSize&offset=$offset";
 
     // Sort the data
     if (sort == null) {
-      url = url + _sortMapping[SortInventoryOptions.idDESC]!;
+      url += _sortMapping[SortInventoryOptions.idDESC]!;
     } else {
-      url = url + _sortMapping[sort]!;
+      url += _sortMapping[sort]!;
+    }
+
+    // Filter results
+    if (filter != null) {
+      url += filter.buildFilterUrl();
     }
 
     logger.d("Fetching data from $url");

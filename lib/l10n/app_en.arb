@@ -2,6 +2,7 @@
   "appTitle": "Diogenes",
   "inventoryTitle": "Inventory",
   "inventoryNoItems": "You do not have any item yet.",
+  "inventoryNoItemsFilter": "No items found for the given filter.",
 
   "inventoryMenuSettings": "Settings",
   "inventoryMenuCategories": "Categories",
@@ -74,5 +75,47 @@
 
   "sortByID": "ID",
   "sortByName": "Name",
-  "sortByNumber": "Number"
+  "sortByNumber": "Number",
+
+
+  "filterModalNumberHint": "Exact number",
+  "filterModalNumberValidation": "Enter an integer number",
+  "filterModalNameHint": "Name like",
+  "filterModalNameValidationLength": "Max. length is 50",  
+  "filterModalDescriptionHint": "Description like",
+  "filterModalDescriptionValidationLength": "Max. length is 2000",
+  "filterModalFilterButton": "Filter",
+  "filterModalClearFiltersButton": "Clear filters",
+
+
+  "filterChipName": "Name: {name}",
+  "@filterChipName": {
+    "description": "The number of items",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Test"
+      }
+    }
+  },
+  "filterChipDescription": "Description: {description}",
+  "@filterChipDescription": {
+    "description": "The number of items",
+    "placeholders": {
+      "description": {
+        "type": "String",
+        "example": "Test"
+      }
+    }
+  },  
+  "filterChipNumber": "Number: {number}",
+  "@filterChipNumber": {
+    "number": "The number of items",
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  }
 }

@@ -2,6 +2,8 @@
   "appTitle": "Diogenes",
   "inventoryTitle": "Inventario",
   "inventoryNoItems": "Ningún ítem disponible.",
+  "inventoryNoItemsFilter": "Ningún ítem disponible con esos filtros.",
+
 
   "inventoryMenuSettings": "Ajustes",
   "inventoryMenuCategories": "Categorías",
@@ -74,5 +76,47 @@
 
   "sortByID": "ID",
   "sortByName": "Nombre",
-  "sortByNumber": "Número"
+  "sortByNumber": "Número",
+
+
+  "filterModalNumberHint": "Número exacto",
+  "filterModalNumberValidation": "Introduce un número entero",
+  "filterModalNameHint": "El nombre contiene...",
+  "filterModalNameValidationLength": "La longitud máxima son 50 caracteres",  
+  "filterModalDescriptionHint": "La descripción contiene...",
+  "filterModalDescriptionValidationLength": "La longitud máxima son 2000 caracteres",
+  "filterModalFilterButton": "Filtrar",
+  "filterModalClearFiltersButton": "Borrar filtros",
+
+    "filterChipName": "Nombre: {name}",
+  "@filterChipName": {
+    "description": "The number of items",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Test"
+      }
+    }
+  },
+  "filterChipDescription": "Descripción: {description}",
+  "@filterChipDescription": {
+    "description": "The number of items",
+    "placeholders": {
+      "description": {
+        "type": "String",
+        "example": "Test"
+      }
+    }
+  },  
+  "filterChipNumber": "Número: {number}",
+  "@filterChipNumber": {
+    "number": "The number of items",
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  }
+
 }
