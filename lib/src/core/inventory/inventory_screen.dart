@@ -1,3 +1,4 @@
+import 'package:diogenes/src/core/inventory/widgets/filter_chips.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -122,6 +123,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
   /// Filter the results only when the filter has changed
   void _onFilter(FilterInventory? newFilter) {
     if (filter == newFilter) {
+      print("Filter is the same");
       return;
     }
     setState(() {
@@ -139,6 +141,11 @@ class _InventoryScreenState extends State<InventoryScreen> {
         return FilterModal(onFilter: _onFilter, previousFilter: filter);
       },
     );
+  }
+
+  /// When a chip is closed query again with the new filter
+  void _onCloseFilterChip(FilterInventory? newFilter) {
+    _onFilter(newFilter);
   }
 
   /// Update the screen filter and refetch results. No validation is needed on
@@ -183,14 +190,24 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 enablePullUp: false,
                 onRefresh: _onRefresh,
                 controller: _refreshController,
-                child: _errorMessage != null
-                    ? Center(child: Text(_errorMessage!))
-                    : items.isEmpty
-                        ? Center(
-                            child: Text(filter != null && filter!.isFiltering()
-                                ? translations.inventoryNoItemsFilter
-                                : translations.inventoryNoItems))
-                        : _displayInventory(items),
+                child: Column(children: [
+                  if (filter != null && filter!.isFiltering())
+                    FilterChips(
+                      filter: filter,
+                      onCloseChip: _onCloseFilterChip,
+                    ),
+                  Expanded(
+                    child: _errorMessage != null
+                        ? Center(child: Text(_errorMessage!))
+                        : items.isEmpty
+                            ? Center(
+                                child: Text(
+                                    filter != null && filter!.isFiltering()
+                                        ? translations.inventoryNoItemsFilter
+                                        : translations.inventoryNoItems))
+                            : _displayInventory(items),
+                  ),
+                ]),
               );
       }),
       floatingActionButton: FloatingActionButton(

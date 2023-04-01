@@ -45,4 +45,18 @@ class FilterInventory {
 
   @override
   int get hashCode => Object.hash(super.hashCode, number, description, number);
+
+  /// copyWith that allows to remove values. See:
+  /// https://stackoverflow.com/questions/68009392/dart-custom-copywith-method-with-nullable-properties
+  FilterInventory nullableCopyWith({
+    int? Function()? number,
+    String? Function()? name,
+    String? Function()? description,
+  }) {
+    return FilterInventory(
+      number: number != null ? number() : this.number,
+      name: name != null ? name() : this.name,
+      description: description != null ? description() : this.description,
+    );
+  }
 }
