@@ -14,8 +14,8 @@ import 'package:diogenes/src/models/request.dart';
 import 'package:diogenes/src/models/sort_inventory_options.dart';
 
 Map<SortInventoryOptions, String> _sortMapping = {
-  SortInventoryOptions.idASC: "&sortDirection=DESC&sort=ID",
-  SortInventoryOptions.idDESC: "&sortDirection=ASC&sort=ID",
+  SortInventoryOptions.idASC: "&sortDirection=ASC&sort=ID",
+  SortInventoryOptions.idDESC: "&sortDirection=DESC&sort=ID",
   SortInventoryOptions.nameASC: "&sortDirection=ASC&sort=NAME",
   SortInventoryOptions.nameDESC: "&sortDirection=DESC&sort=NAME",
   SortInventoryOptions.numberASC: "&sortDirection=ASC&sort=NUMBER",

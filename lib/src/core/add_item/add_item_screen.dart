@@ -53,6 +53,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
   /// Show the number form
   TextFormField _displayNumberForm() {
     return TextFormField(
+      key: const Key('addItemNumberTextField'),
       decoration: InputDecoration(
         labelText: _translations.addItemNumber,
       ),
@@ -73,6 +74,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
   /// Show the description form
   TextFormField _displayDescriptionForm() {
     return TextFormField(
+      key: const Key('addItemDescriptionTextField'),
       decoration: InputDecoration(
         labelText: _translations.addItemDescription,
       ),
@@ -89,6 +91,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
   /// Show the name form
   TextFormField _displayNameForm() {
     return TextFormField(
+      key: const Key('addItemNameTextField'),
       decoration: InputDecoration(
         labelText: _translations.addItemName,
       ),
@@ -159,6 +162,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                       _displayNumberForm(),
                       const SizedBox(height: 16.0),
                       ElevatedButton(
+                        key: const Key('addItemSaveButton'),
                         onPressed: _saveItem,
                         child: Text(widget.item == null
                             ? _translations.addItemAddItemButton

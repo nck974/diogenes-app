@@ -13,6 +13,7 @@ An app to manage your home inventory implemented in flutter.
     English, Spanish
     ```
 1. Sort items.
+1. Filter items.
 
 ## Getting Started
 
@@ -49,3 +50,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // Then call:
 AppLocalizations.of(context)!.propertyNameInTheJson;
 ```
+
+# Development
+
+# Integration test
+
+Main routes should be tested running the tests in `integration_test`.
