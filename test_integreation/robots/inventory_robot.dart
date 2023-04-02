@@ -24,25 +24,4 @@ class InventoryRobot {
     expect((textWidget.evaluate().single.widget as Text).data, name);
     await driver.pumpAndSettle();
   }
-
-  // Future enterPassword(String password) async {
-  //   await driver.tap(find.byValueKey('passwordTextField'));
-  //   await driver.enterText(password);
-  // }
-
-  // Future tapLoginButton() async {
-  //   await driver.tap(find.text('Login'));
-  //   await driver.tap(find.text('Login'));
-  // }
-
-  // Future checkInvalidCredentialsMessageIsShown() async {
-  //   final errorMessageFinder = find.byValueKey('snackbar');
-  //   await driver.waitFor(errorMessageFinder);
-  // }
-
-  // Future checkWelcomeMessageIsShown(String email) async {
-  //   final welcomeMessageFinder = find.text('Welcome $email');
-  //   await driver.waitFor(welcomeMessageFinder);
-  //   test.expect(await driver.getText(welcomeMessageFinder), 'Welcome $email');
-  // }
 }
