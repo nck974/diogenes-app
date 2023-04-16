@@ -15,12 +15,15 @@ import 'package:diogenes/src/core/inventory/widgets/sort_menu.dart';
 import 'package:diogenes/src/core/inventory/widgets/filter_chips.dart';
 import 'package:diogenes/src/widgets/item_list_tile.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
+import 'package:diogenes/src/providers/authentication_provider.dart';
 import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
 import 'package:diogenes/src/exceptions/invalid_response_code_exception.dart';
+import 'package:diogenes/src/exceptions/unauthenticated_exception.dart';
+import 'package:diogenes/src/utils/login/logout.dart';
 
 /// Displays a list with all the items in the inventory.
 class InventoryScreen extends StatefulWidget {
-  static const routeName = '/';
+  static const routeName = '/inventory';
 
   const InventoryScreen({
     super.key,
@@ -83,6 +86,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
         message = translations.inventoryErrorReachingServer;
       } else if (e is InvalidResponseCodeException) {
         message = translations.inventoryHTTPError(e.code);
+      } else if (e is UnauthenticatedException) {
+        logout(context);
       }
       setState(() {
         _errorMessage = message;
@@ -182,9 +187,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
     final translations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: _displayAppBar(translations),
-      body: Consumer<InventoryProvider>(builder: (context, provider, _) {
+      body: Consumer2<InventoryProvider, AuthenticationProvider>(
+          builder: (context, provider, authenticationProvider, _) {
         final items = provider.items;
-        return provider.isLoading
+        return provider.isLoading || authenticationProvider.isLoading
             ? const Center(child: CircularProgressIndicator())
             : SmartRefresher(
                 enablePullUp: false,

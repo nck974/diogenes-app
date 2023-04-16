@@ -1,8 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:oauth2/oauth2.dart' as oauth2;
 
 /// A service that stores and retrieves user settings.
 ///
@@ -15,6 +16,7 @@ class SettingsService {
   static const _themeModeProperty = 'settings.theme.themeMode';
   static const _backendUrlProperty = 'settings.backendServer.url';
   static const _localeProperty = 'settings.locale.language';
+  static const _credentialsProperty = 'login.credentials';
 
   final _logger = Logger();
 
@@ -41,6 +43,13 @@ class SettingsService {
     _logger.d("Saving in '$property' value: ${value.toString()}");
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.setString(property, value.toString());
+  }
+
+  /// Persists the property in the memory shared preferences.
+  Future<void> _deleteSharedProperty(String property) async {
+    _logger.d("Removing property '$property'");
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.remove(property);
   }
 
   /// Persists the user's preferred ThemeMode to local or remote storage.
@@ -102,5 +111,38 @@ class SettingsService {
   /// Persists the user's backendUrl to local or remote storage.
   Future<void> updateBackendUrl(String backendUrl) async {
     _updateSharedProperty(_backendUrlProperty, backendUrl);
+  }
+
+  /// Loads the  access credentials.
+  Future<oauth2.Credentials?> credentials() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    final String? credentialsJson = preferences.getString(_credentialsProperty);
+    if (credentialsJson == null) {
+      _logger.d("Credentials not found in the settings");
+      return null;
+    }
+    try {
+      final credentials = oauth2.Credentials.fromJson(credentialsJson);
+      if (!credentials.isExpired) {
+        _logger.d("Credentials found in the settings");
+        return credentials;
+      } else {
+        _logger.d("Credentials expired");
+        return null;
+      }
+    } catch (e) {
+      _logger.e("Error loading the credentials: $e");
+      return null;
+    }
+  }
+
+  /// Persists the user's accessToken.
+  Future<void> updateCredentials(oauth2.Credentials credentials) async {
+    _updateSharedProperty(_credentialsProperty, credentials.toJson());
+  }
+
+  /// Remove the user's accessToken.
+  Future<void> removeCredentials() async {
+    _deleteSharedProperty(_credentialsProperty);
   }
 }

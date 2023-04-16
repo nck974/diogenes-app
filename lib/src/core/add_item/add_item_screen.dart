@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:diogenes/src/providers/inventory_provider.dart';
 import 'package:diogenes/src/models/item.dart';
+import 'package:diogenes/src/exceptions/unauthenticated_exception.dart';
+import 'package:diogenes/src/utils/login/logout.dart';
 
 class AddItemScreen extends StatefulWidget {
   static const routeName = '/add-item';
@@ -131,6 +134,9 @@ class _AddItemScreenState extends State<AddItemScreen> {
 
         Navigator.pop(context);
       } catch (e) {
+        if (e is UnauthenticatedException) {
+          logout(context);
+        }
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(_translations.addItemCouldNotBeSaved),
         ));

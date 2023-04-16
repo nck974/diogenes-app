@@ -6,7 +6,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:diogenes/src/core/add_item/add_item_screen.dart';
 import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/providers/inventory_provider.dart';
+import 'package:diogenes/src/exceptions/unauthenticated_exception.dart';
 import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
+import 'package:diogenes/src/utils/login/logout.dart';
 
 /// Displays detailed information of an item.
 class ItemDetailScreen extends StatefulWidget {
@@ -86,6 +88,8 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
       var errorMessage = _translations.itemDetailCouldNotBeDeleted;
       if (e is CustomTimeoutException) {
         errorMessage = _translations.itemDetailErrorReachingTheServer;
+      } else if (e is UnauthenticatedException) {
+        logout(context);
       }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(errorMessage),
