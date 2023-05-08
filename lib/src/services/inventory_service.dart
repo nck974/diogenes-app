@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:diogenes/src/exceptions/unauthenticated_exception.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'package:diogenes/src/exceptions/custom_timeout_exception.dart';
 import 'package:diogenes/src/exceptions/invalid_response_code_exception.dart';
@@ -23,18 +25,22 @@ Map<SortInventoryOptions, String> _sortMapping = {
 };
 
 class ItemService {
-  static const itemPath = '/api/v1/item/';
+  static const itemPath = '/diogenes/api/v1/item/';
   late String baseUrl;
-  final String backendUrl;
+  // final String accessToken;
+  final oauth2.Credentials credentials;
   var logger = Logger();
 
-  ItemService({required this.backendUrl}) : baseUrl = "$backendUrl$itemPath";
+  ItemService({required backendUrl, required this.credentials}) {
+    baseUrl = "$backendUrl$itemPath";
+  }
 
-  /// Return the client with a set timeout
-  http.IOClient _client() {
+  /// Return the client with a set timeout and the authentication and
+  /// management of refresh tokens included
+  oauth2.Client _client() {
     final ioClient = HttpClient();
     ioClient.connectionTimeout = const Duration(seconds: 30);
-    return http.IOClient(ioClient);
+    return oauth2.Client(credentials, httpClient: http.IOClient(ioClient));
   }
 
   /// Fetch all items of the inventory
@@ -64,6 +70,12 @@ class ItemService {
     } on SocketException {
       logger.e("Timeout reaching the server");
       throw CustomTimeoutException();
+    } on oauth2.ExpirationException {
+      throw UnauthenticatedException();
+    } on oauth2.AuthorizationException {
+      throw UnauthenticatedException();
+    } on FormatException {
+      throw UnauthenticatedException();
     }
 
     if (response.statusCode != 200) {
@@ -99,6 +111,12 @@ class ItemService {
     } on SocketException {
       logger.e("Timeout reaching the server");
       throw CustomTimeoutException();
+    } on oauth2.ExpirationException {
+      throw UnauthenticatedException();
+    } on oauth2.AuthorizationException {
+      throw UnauthenticatedException();
+    } on FormatException {
+      throw UnauthenticatedException();
     }
     if (response.statusCode != 204) {
       throw Exception(
@@ -121,6 +139,12 @@ class ItemService {
     } on SocketException {
       logger.e("Timeout reaching the server");
       throw CustomTimeoutException();
+    } on oauth2.ExpirationException {
+      throw UnauthenticatedException();
+    } on oauth2.AuthorizationException {
+      throw UnauthenticatedException();
+    } on FormatException {
+      throw UnauthenticatedException();
     }
 
     if (response.statusCode != 201) {
@@ -143,6 +167,12 @@ class ItemService {
     } on SocketException {
       logger.e("Timeout reaching the server");
       throw CustomTimeoutException();
+    } on oauth2.ExpirationException {
+      throw UnauthenticatedException();
+    } on oauth2.AuthorizationException {
+      throw UnauthenticatedException();
+    } on FormatException {
+      throw UnauthenticatedException();
     }
 
     if (response.statusCode != 200) {

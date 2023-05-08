@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:oauth2/oauth2.dart' as oauth2;
+
 import 'package:diogenes/src/services/settings_service.dart';
 
 /// A class that many Widgets can interact with to read user settings, update
@@ -18,11 +20,13 @@ class SettingsController with ChangeNotifier {
   late ThemeMode _themeMode;
   late Locale _locale;
   late String _backendUrl;
+  oauth2.Credentials? _credentials;
 
   // Allow Widgets to read the settings.
   ThemeMode get themeMode => _themeMode;
   Locale get locale => _locale;
   String get backendUrl => _backendUrl;
+  oauth2.Credentials? get credentials => _credentials;
 
   /// Load the user's settings from the SettingsService. It may load from a
   /// local database or the internet. The controller only knows it can load the
@@ -31,6 +35,7 @@ class SettingsController with ChangeNotifier {
     _themeMode = await _settingsService.themeMode();
     _locale = await _settingsService.locale();
     _backendUrl = await _settingsService.backendUrl();
+    _credentials = await _settingsService.credentials();
 
     // Important! Inform listeners a change has occurred.
     notifyListeners();
@@ -88,5 +93,25 @@ class SettingsController with ChangeNotifier {
     // Persist the changes to a local database or the internet using the
     // SettingService.
     await _settingsService.updateBackendUrl(backendUrl);
+  }
+
+  /// Update and persist the access token
+  Future<void> updateCredentials(oauth2.Credentials credentials) async {
+    if (_credentials == credentials) return;
+
+    _credentials = credentials;
+
+    notifyListeners();
+
+    await _settingsService.updateCredentials(credentials);
+  }
+
+  /// Update and persist the access token
+  Future<void> removeCredentials() async {
+    _credentials = null;
+
+    notifyListeners();
+
+    await _settingsService.removeCredentials();
   }
 }

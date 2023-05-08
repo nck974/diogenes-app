@@ -117,5 +117,11 @@
         "example": "1"
       }
     }
-  }
+  },
+
+
+  "loginUsername": "Username",
+  "loginPassword": "Password",
+  "loginLoginButton": "Login",
+  "loginErrorLogin": "There was an error trying to login"
 }

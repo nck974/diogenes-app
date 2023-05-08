@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:diogenes/src/core/settings/settings_screen.dart';
+import 'package:diogenes/src/utils/login/logout.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({
@@ -11,6 +12,14 @@ class NavigationMenu extends StatelessWidget {
   });
 
   final BuildContext context;
+
+  /// Open settings page
+  void _openSettings() {
+    // Navigate to the settings page. If the user leaves and returns
+    // to the app after it has been killed while running in the
+    // background, the navigation stack is restored.
+    Navigator.restorablePushNamed(context, SettingsView.routeName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +37,6 @@ class NavigationMenu extends StatelessWidget {
         ),
         PopupMenuItem<int>(
           value: 2,
-          enabled: false,
           child: Text(translations.inventoryMenuLogout),
         ),
       ];
@@ -36,12 +44,9 @@ class NavigationMenu extends StatelessWidget {
       if (value == 0) {
         print("Categories is selected. TODO"); // TODO
       } else if (value == 1) {
-        // Navigate to the settings page. If the user leaves and returns
-        // to the app after it has been killed while running in the
-        // background, the navigation stack is restored.
-        Navigator.restorablePushNamed(context, SettingsView.routeName);
+        _openSettings();
       } else if (value == 2) {
-        print("Logout menu is selected.");
+        logout(context);
       }
     });
   }

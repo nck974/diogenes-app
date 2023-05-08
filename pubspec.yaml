@@ -2,12 +2,12 @@ name: diogenes
 description: An app to manage your home inventory.
 
 # Prevent accidental publishing to pub.dev.
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.4 <3.0.0'
+  sdk: ">=2.19.4 <3.0.0"
 
 dependencies:
   flutter:
@@ -27,6 +27,8 @@ dependencies:
   logger: ^1.3.0
   # Save settings in device
   shared_preferences: ^2.0.20
+  # Authentication
+  oauth2: ^2.0.1
 
 # Hack until flutter releases this version in stable version. See:
 # https://stackoverflow.com/questions/75571793/because-chatview-1-0-0-depends-on-intl-0-18-0-and-mobile-app-depends-on-intl

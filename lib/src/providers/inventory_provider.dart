@@ -4,8 +4,11 @@ import 'package:diogenes/src/models/item.dart';
 import 'package:diogenes/src/models/sort_inventory_options.dart';
 import 'package:diogenes/src/models/filter_inventory.dart';
 import 'package:diogenes/src/services/inventory_service.dart';
+import 'package:diogenes/src/providers/authentication_provider.dart';
+import 'package:diogenes/src/exceptions/unauthenticated_exception.dart';
 
 class InventoryProvider extends ChangeNotifier {
+  AuthenticationProvider authenticationProvider;
   String _backendUrl;
   final List<Item> _items = [];
   final int _pageSize = 20;
@@ -15,7 +18,8 @@ class InventoryProvider extends ChangeNotifier {
   SortInventoryOptions? _lastSort;
   FilterInventory? _lastFilter;
 
-  InventoryProvider({required backendUrl}) : _backendUrl = backendUrl;
+  InventoryProvider({required this.authenticationProvider, required backendUrl})
+      : _backendUrl = backendUrl;
 
   List<Item> get items => List.unmodifiable(_items);
   bool get isLoading => _isLoading;
@@ -42,6 +46,18 @@ class InventoryProvider extends ChangeNotifier {
     _pageNumber = 0;
     _lastPage = false;
     _items.clear();
+  }
+
+  /// Get service
+  ItemService getService() {
+    final credentials = authenticationProvider.credentials;
+    if (credentials == null) {
+      throw UnauthenticatedException();
+    }
+    return ItemService(
+      backendUrl: _backendUrl,
+      credentials: credentials,
+    );
   }
 
   /// Download the list of items
@@ -74,7 +90,7 @@ class InventoryProvider extends ChangeNotifier {
     // Fetch
     _startLoading();
     try {
-      final response = await ItemService(backendUrl: _backendUrl).fetchAllItems(
+      final response = await getService().fetchAllItems(
           offset: _pageNumber, pageSize: _pageSize, sort: sort, filter: filter);
       _lastPage = response.lastPage;
       final items = response.items.map((e) => Item.fromJson(e)).toList();
@@ -97,7 +113,7 @@ class InventoryProvider extends ChangeNotifier {
   Future<void> deleteItem(Item item) async {
     _startLoading();
     try {
-      await ItemService(backendUrl: _backendUrl).deleteItem(item.id);
+      await getService().deleteItem(item.id);
     } catch (_) {
       _endLoading();
       rethrow;
@@ -111,7 +127,7 @@ class InventoryProvider extends ChangeNotifier {
   Future<void> addItem(Item item) async {
     _startLoading();
     try {
-      await ItemService(backendUrl: _backendUrl).addItem(item);
+      await getService().addItem(item);
       await fetchAllItems(true);
     } catch (_) {
       _endLoading();
@@ -124,7 +140,7 @@ class InventoryProvider extends ChangeNotifier {
   Future<void> editItem(Item item) async {
     _startLoading();
     try {
-      await ItemService(backendUrl: _backendUrl).editItem(item);
+      await getService().editItem(item);
       await fetchAllItems(true);
     } catch (_) {
       _endLoading();
