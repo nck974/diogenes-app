@@ -25,7 +25,7 @@ Map<SortInventoryOptions, String> _sortMapping = {
 };
 
 class ItemService {
-  static const itemPath = '/api/v1/item/';
+  static const itemPath = '/diogenes/api/v1/item/';
   late String baseUrl;
   // final String accessToken;
   final oauth2.Credentials credentials;

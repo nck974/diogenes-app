@@ -5,17 +5,15 @@ import 'package:diogenes/src/exceptions/authorization_exception.dart';
 
 class AuthenticationService {
   static String authenticationPath =
-      '/realms/diogenes/protocol/openid-connect/token';
-  final String baseUrl;
+      '/keycloak/realms/diogenes/protocol/openid-connect/token';
+  final String authorizationEndpoint;
   final String backendUrl;
   final String identifier = 'diogenes-client';
   final String secret = '';
-  final String authorizationEndpoint =
-      'http://10.0.2.2:8081/realms/diogenes/protocol/openid-connect/token'; // TODO: Change to provided URL once apache/ngix is ready
   final logger = Logger();
 
   AuthenticationService({required this.backendUrl})
-      : baseUrl = "$backendUrl$authenticationPath";
+      : authorizationEndpoint = "$backendUrl$authenticationPath";
 
   Future<oauth2.Credentials> authenticate(
       String username, String password) async {
